@@ -19,11 +19,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class DownloadExcept implements GBDCommand {
+public class DownloadSpecific implements GBDCommand {
     private final ExecutorService service = Executors.newCachedThreadPool();
     @Override
     public List<String> names() {
-        return List.of("downloadexcept", "de");
+        return List.of("downloadspecific", "ds");
     }
 
     @Override
@@ -31,13 +31,14 @@ public class DownloadExcept implements GBDCommand {
         String output = args.length == 0 ? "downloads" : args[0];
         File file = new File(Main.CURRENT, output);
 
-        List<String> excepts;
+        List<String> specific;
 
         if (args.length >= 2) {
-            String[] exceptArray = Arrays.copyOfRange(args, 1, args.length);
-            excepts = Arrays.asList(exceptArray);
+            String[] specificArray = Arrays.copyOfRange(args, 1, args.length);
+            specific = Arrays.asList(specificArray);
         } else {
-            excepts = new ArrayList<>();
+            Main.LOGGER.info("请输入特定项目名称");
+            return;
         }
 
         if (!file.exists()) {
@@ -51,7 +52,7 @@ public class DownloadExcept implements GBDCommand {
         List<ProjectInfoSmall> infos = new ArrayList<>();
         projects.forEach(e -> infos.add(gson.fromJson(e, ProjectInfoSmall.class)));
 
-        List<ProjectInfoSmall> handled = infos.stream().filter(p -> !excepts.contains(p.getRepository())).toList();
+        List<ProjectInfoSmall> handled = infos.stream().filter(p -> specific.contains(p.getRepository())).toList();
 
         Main.LOGGER.info("开始下载...");
 
@@ -73,6 +74,6 @@ public class DownloadExcept implements GBDCommand {
 
     @Override
     public String getDescription() {
-        return "下载经过排除的项目";
+        return "下载特定项目";
     }
 }

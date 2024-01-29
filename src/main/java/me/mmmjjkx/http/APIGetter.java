@@ -11,11 +11,8 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.net.URIBuilder;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
 public class APIGetter {

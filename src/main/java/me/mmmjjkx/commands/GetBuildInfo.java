@@ -31,4 +31,9 @@ public class GetBuildInfo implements GBDCommand {
         String buildid = args.length == 3 ? "latest" : args[4];
 
     }
+
+    @Override
+    public String getDescription() {
+        return "获取构建信息";
+    }
 }

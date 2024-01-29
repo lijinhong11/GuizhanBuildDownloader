@@ -1,7 +1,10 @@
 package me.mmmjjkx;
 
+import lombok.Getter;
 import me.mmmjjkx.commands.DownloadAll;
-import me.mmmjjkx.commands.GetBuildInfo;
+import me.mmmjjkx.commands.DownloadExcept;
+import me.mmmjjkx.commands.DownloadSpecific;
+import me.mmmjjkx.commands.Help;
 import me.mmmjjkx.objects.GBDCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import java.util.Scanner;
 public class Main {
     public static File CURRENT;
     public static Logger LOGGER;
+    @Getter
     private static List<GBDCommand> commands;
 
     public static void main(String[] args) {
@@ -46,8 +50,12 @@ public class Main {
     }
 
     private static void setupCommands() {
+        commands.add(new Help());
         commands.add(new DownloadAll());
-        commands.add(new GetBuildInfo());
+        commands.add(new DownloadExcept());
+        commands.add(new DownloadSpecific());
+
+        //TODO commands.add(new GetBuildInfo());
     }
 
     private static GBDCommand getCmd(String name) {

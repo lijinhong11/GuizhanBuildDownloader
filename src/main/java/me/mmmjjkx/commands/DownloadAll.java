@@ -55,4 +55,9 @@ public class DownloadAll implements GBDCommand {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public String getDescription() {
+        return "下载全部项目";
+    }
 }
