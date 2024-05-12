@@ -1,7 +1,7 @@
-package me.mmmjjkx.commands;
+package me.mmmjjkx.gbd.commands;
 
-import me.mmmjjkx.Main;
-import me.mmmjjkx.objects.GBDCommand;
+import me.mmmjjkx.gbd.Main;
+import me.mmmjjkx.gbd.objects.GBDCommand;
 
 import java.util.List;
 

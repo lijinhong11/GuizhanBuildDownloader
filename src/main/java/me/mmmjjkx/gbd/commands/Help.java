@@ -1,7 +1,7 @@
-package me.mmmjjkx.commands;
+package me.mmmjjkx.gbd.commands;
 
-import me.mmmjjkx.Main;
-import me.mmmjjkx.objects.GBDCommand;
+import me.mmmjjkx.gbd.Main;
+import me.mmmjjkx.gbd.objects.GBDCommand;
 
 import java.util.List;
 
@@ -13,11 +13,19 @@ public class Help implements GBDCommand {
 
     @Override
     public void execute(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+
         for (GBDCommand cmd : Main.getCommands()) {
             String names = cmd.names().toString();
             String parsed = names.substring(1, names.length() - 1).replace(" ", "");
-            Main.LOGGER.info(parsed + " " + cmd.getDescription());
+
+            builder.append(parsed).append(" - ").append(cmd.getDescription());
+            if (Main.getCommands().indexOf(cmd) != Main.getCommands().size() - 1) {
+                builder.append("\n");
+            }
         }
+        Main.LOGGER.info(builder.toString());
     }
 
     @Override

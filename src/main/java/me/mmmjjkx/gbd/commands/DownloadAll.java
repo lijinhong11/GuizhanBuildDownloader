@@ -1,45 +1,31 @@
-package me.mmmjjkx.commands;
+package me.mmmjjkx.gbd.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import me.mmmjjkx.ConcurrentFileDownloader;
-import me.mmmjjkx.Main;
-import me.mmmjjkx.http.APIGetter;
-import me.mmmjjkx.objects.GBDCommand;
-import me.mmmjjkx.objects.ProjectInfoSmall;
+import com.google.gson.*;
+import me.mmmjjkx.gbd.ConcurrentFileDownloader;
+import me.mmmjjkx.gbd.Main;
+import me.mmmjjkx.gbd.http.APIGetter;
+import me.mmmjjkx.gbd.objects.GBDCommand;
+import me.mmmjjkx.gbd.objects.ProjectInfoSmall;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class DownloadSpecific implements GBDCommand {
+public class DownloadAll implements GBDCommand {
     private final ExecutorService service = Executors.newCachedThreadPool();
     @Override
     public List<String> names() {
-        return List.of("downloadspecific", "ds");
+        return List.of("downloadall", "da");
     }
 
     @Override
     public void execute(String[] args) {
         String output = args.length == 0 ? "downloads" : args[0];
         File file = new File(Main.CURRENT, output);
-
-        List<String> specific;
-
-        if (args.length >= 2) {
-            String[] specificArray = Arrays.copyOfRange(args, 1, args.length);
-            specific = Arrays.asList(specificArray);
-        } else {
-            Main.LOGGER.info("请输入特定项目名称");
-            return;
-        }
 
         if (!file.exists()) {
             file.mkdirs();
@@ -52,11 +38,9 @@ public class DownloadSpecific implements GBDCommand {
         List<ProjectInfoSmall> infos = new ArrayList<>();
         projects.forEach(e -> infos.add(gson.fromJson(e, ProjectInfoSmall.class)));
 
-        List<ProjectInfoSmall> handled = infos.stream().filter(p -> specific.contains(p.getRepository())).toList();
-
         Main.LOGGER.info("开始下载...");
 
-        for (ProjectInfoSmall info : handled) {
+        for (ProjectInfoSmall info : infos) {
             Main.LOGGER.info("正在下载 " + info.getAuthor() + "/" + info.getRepository() + "/" + info.getBranch());
             String uri = APIGetter.uri + "download/"+info.getAuthor()+"/"+info.getRepository()+"/"+info.getBranch()+"/latest";
             service.submit(() -> ConcurrentFileDownloader.downloadFile(file, uri, 10));
@@ -66,7 +50,7 @@ public class DownloadSpecific implements GBDCommand {
 
         try {
             service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-            Main.LOGGER.info("已下载选定项目\n");
+            Main.LOGGER.info("已下载所有项目\n");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -74,6 +58,6 @@ public class DownloadSpecific implements GBDCommand {
 
     @Override
     public String getDescription() {
-        return "下载特定项目";
+        return "下载全部项目";
     }
 }

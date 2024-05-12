@@ -1,4 +1,4 @@
-package me.mmmjjkx.objects;
+package me.mmmjjkx.gbd.objects;
 
 import lombok.Getter;
 

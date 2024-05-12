@@ -1,11 +1,14 @@
-package me.mmmjjkx;
+package me.mmmjjkx.gbd;
 
 import lombok.Getter;
-import me.mmmjjkx.commands.DownloadAll;
-import me.mmmjjkx.commands.DownloadExcept;
-import me.mmmjjkx.commands.DownloadSpecific;
-import me.mmmjjkx.commands.Help;
-import me.mmmjjkx.objects.GBDCommand;
+import me.mmmjjkx.gbd.commands.DownloadAll;
+import me.mmmjjkx.gbd.commands.DownloadExcept;
+import me.mmmjjkx.gbd.commands.DownloadSpecific;
+import me.mmmjjkx.gbd.commands.Help;
+import me.mmmjjkx.gbd.objects.GBDCommand;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,21 +24,26 @@ public class Main {
     @Getter
     private static List<GBDCommand> commands;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         commands = new ArrayList<>();
         CURRENT = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile();
+
+        preloadLog4jThings();
+
         LOGGER = LoggerFactory.getLogger(Main.class);
 
         setupCommands();
 
         LOGGER.info("""
+                
                 欢迎使用GuizhanBuildDownloader by lijinhong11(mmmjjkx)
-                请在下面输入指令来执行对应操作，
-                输入help获取帮助
+                请在下面输入指令来执行对应操作, 输入help获取帮助
                 """);
+
         Scanner scanner = new Scanner(System.in);
+        System.out.print("> ");
         while (scanner.hasNextLine()) {
-            String input = scanner.nextLine();
+            String input = scanner.nextLine().replaceFirst("> ", "");
             String[] split = input.split(" ");
             GBDCommand cmd = getCmd(split[0]);
             if (!input.isBlank()) {
@@ -46,6 +54,7 @@ public class Main {
                     cmd.execute(split);
                 }
             }
+            System.out.print("> ");
         }
     }
 
@@ -65,5 +74,11 @@ public class Main {
             }
         }
         return null;
+    }
+
+    private static void preloadLog4jThings() {
+        ConsoleAppender.class.getName();
+        FileAppender.class.getName();
+        PatternLayout.class.getName();
     }
 }

@@ -1,4 +1,4 @@
-package me.mmmjjkx;
+package me.mmmjjkx.gbd;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,12 +59,12 @@ public class ConcurrentFileDownloader {
             }
 
             if (!incompleteFiles.isEmpty()) {
-                Main.LOGGER.info("文件下载失败或有残缺：" + file.getCanonicalPath());
+                Main.LOGGER.info("文件下载失败或有残缺：{}", file.getCanonicalPath());
             } else {
-                Main.LOGGER.info("文件下载成功：" + file.getCanonicalPath());
+                Main.LOGGER.info("文件下载成功：{}", file.getCanonicalPath());
             }
         } catch (Exception e) {
-            Main.LOGGER.info("文件下载失败：" + e.getMessage());
+            Main.LOGGER.info("文件下载失败：{}", e.getMessage());
         }
     }
 

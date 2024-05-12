@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 Built-By: mmmjjkx
 Created-By: Apache Maven 3.5.3
 Build-Jdk: 17
-Main-Class: me.mmmjjkx.Main
+Main-Class: me.mmmjjkx.gbd.Main
