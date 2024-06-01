@@ -1,10 +1,9 @@
 package me.mmmjjkx.gbd.commands;
 
 import com.google.gson.*;
-import me.mmmjjkx.gbd.ConcurrentFileDownloader;
 import me.mmmjjkx.gbd.Main;
+import me.mmmjjkx.gbd.commands.presets.DownloadCommand;
 import me.mmmjjkx.gbd.http.APIGetter;
-import me.mmmjjkx.gbd.objects.GBDCommand;
 import me.mmmjjkx.gbd.objects.ProjectInfoSmall;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 
@@ -15,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class DownloadAll implements GBDCommand {
+public class DownloadAll implements DownloadCommand {
     private final ExecutorService service = Executors.newCachedThreadPool();
     @Override
     public List<String> names() {
@@ -41,9 +40,9 @@ public class DownloadAll implements GBDCommand {
         Main.LOGGER.info("开始下载...");
 
         for (ProjectInfoSmall info : infos) {
-            Main.LOGGER.info("正在下载 " + info.getAuthor() + "/" + info.getRepository() + "/" + info.getBranch());
+            Main.LOGGER.info("正在下载 {}/{}/{}", info.getAuthor(), info.getRepository(), info.getBranch());
             String uri = APIGetter.uri + "download/"+info.getAuthor()+"/"+info.getRepository()+"/"+info.getBranch()+"/latest";
-            service.submit(() -> ConcurrentFileDownloader.downloadFile(file, uri, 10));
+            service.submit(() -> download(file, uri));
         }
 
         service.shutdown();

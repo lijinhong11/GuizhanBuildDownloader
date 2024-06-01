@@ -12,7 +12,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.net.URIBuilder;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.Arrays;
 
 public class APIGetter {
@@ -22,7 +22,6 @@ public class APIGetter {
     static {
         client = HttpClients.createDefault();
         uri = "https://builds.guizhanss.com/api/";
-
     }
 
     public static String get(String endpoint, NameValuePair... args) {
@@ -32,15 +31,32 @@ public class APIGetter {
             HttpGet get = new HttpGet(builder.build());
             CloseableHttpResponse response = client.execute(get);
             int status = response.getCode();
-            Main.LOGGER.warn("返回代码：" + status);
+            Main.LOGGER.warn("返回代码：{}", status);
 
             HttpEntity entity = response.getEntity();
             String content = EntityUtils.toString(entity, "utf-8");
-            Main.LOGGER.info("返回结果："+ content);
+            Main.LOGGER.info("返回结果：{}", content);
 
             return content;
         } catch (IOException | ParseException | URISyntaxException e) {
             Main.LOGGER.error("获取失败");
+            return "";
+        }
+    }
+
+    public static String getFileName(String url) {
+        if (url == null) {
+            return "";
+        }
+
+        try {
+            URL urlObj = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+            connection.setInstanceFollowRedirects(true);
+            connection.setConnectTimeout(5000);
+
+            return connection.getHeaderField("Content-Disposition").split("filename=")[1].replace("\"", "");
+        } catch (Exception e) {
             return "";
         }
     }
